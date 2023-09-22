@@ -20,9 +20,11 @@ python3.11.5 needed before installing program.
 
 * How/where to download your program
   https://www.python.org/downloads/
+ To install Python on Windows, download the latest version of Python from the Python website, then run the installer. Ensure that you add Python to the PATH when presented with the option.
+
 * Any modifications needed to be made to files/folders
   NA
-
+  
 ### Executing program
 
 * How to run the program
