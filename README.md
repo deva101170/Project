@@ -80,6 +80,7 @@ Functions used in the code:
 - dealer_busts: When the Dealer's total value exceeds 21.
 - dealer_wins: When the Dealer's total value is more than the Player's.
 - push: When the Dealer's and the Player's total value is the same aka a tie.
+- sortdeck: This method is used to sort the cards after shuffle and combine the cards in the deck based on the suit and color.
 
 
 Adiditional features:
