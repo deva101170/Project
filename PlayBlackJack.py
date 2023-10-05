@@ -8,12 +8,15 @@ BlackJack card game play
 import random
 import sys
 
+#suits = ('Hearts', 'Diamonds', 'Spades', 'Clubs')
 suits = ('Hearts', 'Diamonds', 'Spades', 'Clubs')
 ranks = ('Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Jack', 'Queen', 'King', 'Ace')
 values = {'Two':2, 'Three':3, 'Four':4, 'Five':5, 'Six':6, 'Seven':7, 'Eight':8, 'Nine':9, 'Ten':10, 'Jack':10,
          'Queen':10, 'King':10, 'Ace':11}
-
+         
 playing = True
+playerval = 21
+dealerval= 17  
 
 #creating card class#
 
@@ -36,17 +39,43 @@ class Deck:
             for rank in ranks:
                 self.deck.append(Card(suit, rank))
     
+        
     def __str__(self):
         deck_comp = '' #starting competition deck empty#
         for card in self.deck:
             deck_comp += '\n' + card.__str__() #add each card object
-        return deck_comp
+        return deck_comp        
             
     def shuffle(self):
+        #print('shuffle deck')
         random.shuffle(self.deck)
         
+    def sortdeck(self):
+        deck_spades = ''
+        deck_clubs = ''
+        deck_hearts = ''
+        deck_diamonds = ''
+        deck_comp_sort = ''
+        print('\nSort cards in deck')
+        for card in self.deck:
+            if card.suit == "Spades":
+                deck_spades += '\n' + card.__str__() #add Spades        
+            if card.suit == "Clubs":
+                deck_clubs += '\n' + card.__str__() #add Clubs
+            if card.suit == "Hearts":
+                deck_hearts += '\n' + card.__str__() #add Hearts
+            if card.suit == "Diamonds":
+                deck_diamonds += '\n' + card.__str__() #add Diamonds
+ 
+        deck_comp_sort = deck_spades + deck_clubs + deck_hearts + deck_diamonds
+        print(deck_comp_sort)            
+      
+        
+      
     def deal(self):
+        #print('deal deck')
         single_card = self.deck.pop()
+        #print(single_card)
         return single_card
 
 #creating a hand#
@@ -64,7 +93,7 @@ class Hand:
             self.aces += 1
     
     def adjust_for_ace(self):
-        while self.value > 21 and self.aces:
+        while self.value > playerval and self.aces:
             #print(self.value) 
             self.value -= 10
             self.aces -= 1
@@ -74,7 +103,7 @@ class Hand:
 class Chips:
     
     def __init__(self):
-        self.total = 100  # This can be set to a default value or supplied by a user input
+        self.total = 500  # This can be set to a default value or supplied by a user input
         self.bet = 0
         
     def win_bet(self):
@@ -96,8 +125,9 @@ def take_bet(chips):
         else:
             if chips.bet > chips.total:
                 print('Sorry, your bet cannot exceed {} '.format(chips.total))
-            if chips.bet < 1:
-                print('Sorry, enter a value greater than 0 ')
+                continue
+            if chips.bet < 2:
+                print('Sorry, enter a value greater than 1 ')
             else:
                 break      
 
@@ -185,9 +215,13 @@ def acevalue():
         except ValueError:
             print("Sorry, Input must be an integer!\n")
         else:
-            if aceval > 0:
+            if aceval != 11 and aceval != 0 and aceval != 1:
+                print('Please enter a valid val for Ace') 
+                continue
+            elif aceval > 0:
                 values['Ace'] = aceval
-            break   
+            break
+            
 
 ''' ************************************************************************************************************************************** '''
 
@@ -208,6 +242,24 @@ while True:
     # Create & shuffle the deck, deal two cards to each player
     deck = Deck()
     deck.shuffle()
+    print(deck)
+    
+    deck.sortdeck()
+    
+   
+    # # The second parameter is the input iterable
+    # # The filter() applies the lambda to the iterable
+    # # and only returns all matches where the lambda evaluates
+    # # to true
+    # sortdeck = filter(lambda a: 'Spades' in a, deck) 
+    # # Convert the filter object to list
+    # print(list(sortdeck))
+    
+    
+    # print('Sort cards and print')     
+    # showdecksort = deck.sortdeck()
+    # for i in showdecksort:
+        # print(f' Sorted card by black and red: {i.suit} {i.rank}' )
     
     player_hand = Hand()
     player_hand.add_card(deck.deal())
@@ -235,23 +287,23 @@ while True:
         show_some(player_hand,dealer_hand) 
         
         # If player's hand exceeds 21, run player_busts() and break out of loop
-        if player_hand.value >21:
+        if player_hand.value >playerval:
             player_busts(player_hand, dealer_hand, player_chips)
             # Show all cards
             show_all(player_hand,dealer_hand)
             break
 
     # If Player hasn't busted, play Dealer's hand until Dealer reaches 17
-    if player_hand.value <= 21:
+    if player_hand.value <= playerval:
         
-        while dealer_hand.value <17:
+        while dealer_hand.value < dealerval:
             hit(deck, dealer_hand)
     
         # Show all cards
         show_all(player_hand,dealer_hand)
         
         # Run different winning scenarios
-        if dealer_hand.value > 21:
+        if dealer_hand.value > playerval:
             dealer_busts(player_hand,dealer_hand,player_chips)
 
         elif dealer_hand.value > player_hand.value:
